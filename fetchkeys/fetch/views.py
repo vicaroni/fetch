@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.core.management import call_command
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -7,7 +7,11 @@ from .models import UserRepository, DeployKey
 
 # Create your views here.
 @login_required
-def key_list(request):
+def key_list(request, response=0):
+    if response == 'update':
+        result = call_command('key_download', request.user.username, request.user.tokens.first().token)
+        if result == 'not_found':
+            return render(request, 'fetch/key_list.html', {'user': request.user, 'error': 'Token not found on Github'})
     return render(request, 'fetch/key_list.html', {'user': request.user})
 
 @login_required
@@ -22,12 +26,6 @@ def user_form(request):
     else:
         form = UserForm()
     return render(request, 'fetch/user_form.html', {'form': form})
-
-@login_required
-def key_download(request):
-    user = request.user
-    call_command('key_download', user.username, user.tokens.first().token)
-    return redirect('key_list')
 
 def register(request):
     if request.method =='POST':
