@@ -12,7 +12,10 @@
   {% endfor %}
 </ul>
 {% if user.tokens %}
-  <a href="{% url 'key_download' %}">Update repo list</a>
+  {% if error %}
+    {{error}}
+  {% endif %}
+  <a href="{% url 'key_list' response='update' %}">Update repo list</a>
 {% endif %}
 {% for repo in user.repos.all %}
   <h2>{{repo.name}}</h2>
