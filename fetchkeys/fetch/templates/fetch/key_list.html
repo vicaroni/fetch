@@ -1,0 +1,32 @@
+{% extends 'fetch/base.html' %}
+{% block content %}
+<h2>Logged in as {{user.username}}</h2>
+<a href="{% url 'logout' %}">Logout</a>
+<a href="{% url 'user_form' %}">Add Personal Access Token</a>
+<h2>Existing tokens:</h2>
+<ul>
+  {% for token in user.tokens.all %}
+    <li>{{token.description}}</li>
+  {% empty %}
+    No tokens added
+  {% endfor %}
+</ul>
+{% if user.tokens %}
+  <a href="{% url 'key_download' %}">Update repo list</a>
+{% endif %}
+{% for repo in user.repos.all %}
+  <h2>{{repo.name}}</h2>
+  <ul>
+    {% for key in repo.keys.all %}
+      <li>
+        <h3>{{key.title}}</h3><br/>
+        {{key.key}}
+      </li>
+    {% empty %}
+      No keys.
+    {% endfor %}
+  </ul>
+{% empty %}
+  No repositories available.
+{% endfor %}
+{% endblock %}

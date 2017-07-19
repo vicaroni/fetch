@@ -1,0 +1,11 @@
+{% extends 'fetch/base.html' %}
+{% block content %}
+<h2>New Token</h2>
+<form method="post" class="post-form">
+  {% csrf_token %}
+  {{form.as_p}}
+  <!--<button type="submit" class="save">Save</button>-->
+  <input type="submit" value="Save"/>
+</form>
+<a href="{% url 'key_list' %}">Cancel</a>
+{% endblock %}
