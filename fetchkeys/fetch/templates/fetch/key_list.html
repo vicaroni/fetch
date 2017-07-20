@@ -11,25 +11,25 @@
     No tokens added
   {% endfor %}
 </ul>
-{% if user.tokens %}
+{% if user.tokens.all %}
   {% if error %}
     {{error}}
   {% endif %}
   <a href="{% url 'key_list' response='update' %}">Update repo list</a>
+  {% for repo in user.repos.all %}
+    <h2>{{repo.name}}</h2>
+    <ul>
+      {% for key in repo.keys.all %}
+        <li>
+          <h3>{{key.title}}</h3><br/>
+          {{key.key}}
+        </li>
+      {% empty %}
+        No keys.
+      {% endfor %}
+    </ul>
+  {% empty %}
+    No repositories available.
+  {% endfor %}
 {% endif %}
-{% for repo in user.repos.all %}
-  <h2>{{repo.name}}</h2>
-  <ul>
-    {% for key in repo.keys.all %}
-      <li>
-        <h3>{{key.title}}</h3><br/>
-        {{key.key}}
-      </li>
-    {% empty %}
-      No keys.
-    {% endfor %}
-  </ul>
-{% empty %}
-  No repositories available.
-{% endfor %}
 {% endblock %}

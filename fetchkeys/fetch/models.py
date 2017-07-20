@@ -4,8 +4,8 @@ from django.conf import settings
 # Create your models here.
 class Token(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='tokens')
-    description = models.CharField(max_length=100, default='---')
-    token = models.CharField(max_length=40)
+    description = models.CharField(max_length=100)
+    token = models.CharField(max_length=40, unique=True)
 
 class UserRepository(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='repos')
