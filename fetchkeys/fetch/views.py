@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect
 from django.core.management import call_command
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+
 from .forms import UserForm, RegisterForm
 from .models import UserRepository, DeployKey
 
 # Create your views here.
 @login_required
-def key_list(request, response=0):
+def key_list(request, response):
     if response == 'update':
         result = call_command('key_download', request.user.username, request.user.tokens.first().token)
         if result == 'not_found':
@@ -22,7 +23,7 @@ def user_form(request):
             token = form.save(commit=False)
             token.user = request.user
             token.save()
-            return redirect('key_list')
+            return redirect('key_list', response='')
     else:
         form = UserForm()
     return render(request, 'fetch/user_form.html', {'form': form})

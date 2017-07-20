@@ -19,5 +19,5 @@ class Command(BaseCommand):
         for repo in git_user.get_repos():
             if repo.permissions.admin:
                 local_repo = UserRepository.objects.get_or_create(user=local_user, name=repo.full_name)[0]
-                    for key in repo.get_keys():
-                        DeployKey.objects.get_or_create(repository=local_repo, title=key.title, key=key.key)
+                for key in repo.get_keys():
+                    DeployKey.objects.get_or_create(repository=local_repo, title=key.title, key=key.key)
