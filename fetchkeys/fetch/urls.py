@@ -7,5 +7,4 @@ urlpatterns = [
     url(r'^token/$', views.user_form, name='user_form'),
     url(r'^$', django.contrib.auth.views.login, name='login'),
     url(r'^register/$', views.register, name='register'),
-    url(r'^download/$', views.key_download, name='key_download')
 ]
