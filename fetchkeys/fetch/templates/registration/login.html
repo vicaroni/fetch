@@ -1,6 +1,6 @@
 {% extends 'fetch/base.html' %}
 {% block content %}
-<a href="{% url 'register' %}">Register</a>
+<a class="button"  class="button"href="{% url 'register' %}">Register</a>
     {% if form.errors %}
         <p>Your username and password didn't match. Please try again.</p>
     {% endif %}
