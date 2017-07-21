@@ -51,6 +51,7 @@ def test_key_download_command(mocker):
 
 
 def test_delete(client):
+    """Tests Token, UserRepository and DeployKey deleting after calling delete view"""
     user = User.objects.create(username='prova')
     user.set_password('123456')
     user.save()
