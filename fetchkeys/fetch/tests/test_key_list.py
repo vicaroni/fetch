@@ -15,9 +15,9 @@ def test_key_list(client):
     user.set_password('123456')
     user.save()
     client.login(username='prova', password='123456')
-    Token.objects.create(user=user, description='Token prova', token='prova')
-    repo = UserRepository.objects.create(user=user, name='Repo prova')
-    DeployKey.objects.create(repository=repo, title='Chiave prova', key='ssh-rsa prova')
+    Token.objects.create(user=user, description='Token', token='token')
+    repo = UserRepository.objects.create(user=user, name='Repo')
+    DeployKey.objects.create(repository=repo, title='Key', key='ssh-rsa')
     response = client.get(reverse('key_list', args=('',))).content
     assert b'Token prova' in response
     assert b'Repo prova' in response
@@ -48,3 +48,18 @@ def test_key_download_command(mocker):
     assert DeployKey.objects.get(repository=repo1, title='key1')
     assert DeployKey.objects.get(repository=repo1, title='key2')
     assert DeployKey.objects.get(repository=repo1, title='key3')
+
+
+def test_delete(client):
+    user = User.objects.create(username='prova')
+    user.set_password('123456')
+    user.save()
+    client.login(username='prova', password='123456')
+    token = Token.objects.create(user=user, description='Token', token='token')
+    repo = UserRepository.objects.create(user=user, name='Repo')
+    key = DeployKey.objects.create(repository=repo, title='Key', key='ssh-rsa')
+    client.get(reverse('delete', args=('token', token.description)))
+    client.get(reverse('delete', args=('repo', repo.name)))
+    assert pytest.raises(Token.DoesNotExist, Token.objects.get, description=token.description)
+    assert pytest.raises(UserRepository.DoesNotExist, UserRepository.objects.get, name=repo.name)
+    assert pytest.raises(DeployKey.DoesNotExist, DeployKey.objects.get, title=key.title)
