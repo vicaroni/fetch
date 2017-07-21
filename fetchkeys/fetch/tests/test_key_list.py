@@ -3,11 +3,11 @@ import pytest
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.management import call_command
-from github import Github
 
 from fetch.models import Token, UserRepository, DeployKey
 
 pytestmark = pytest.mark.django_db
+
 
 def test_key_list(client):
     """Tests key_list proper listing of tokens, repos and keys"""
@@ -25,6 +25,7 @@ def test_key_list(client):
     assert b'Key' in response
     assert b'ssh-rsa' in response
 
+
 def test_key_download_command(mocker):
     """Tests database UserRepository and DeployKey entries after calling key_download"""
     mock_github = mocker.patch('fetch.management.commands.key_download.Github')
@@ -32,7 +33,10 @@ def test_key_download_command(mocker):
     for grepo in grepos:
         grepo.permissions.admin = True
         grepo.full_name = 'Repo' + str(grepos.index(grepo))
-        grepo.get_keys.return_value = [Mock(title='key1', key='ssh-rsa 1'), Mock(title='key2', key='ssh-rsa 2'), Mock(title='key3', key='ssh-rsa 3')]
+        grepo.get_keys.return_value = [
+            Mock(title='key1', key='ssh-rsa 1'),
+            Mock(title='key2', key='ssh-rsa 2'),
+            Mock(title='key3', key='ssh-rsa 3')]
     grepos[2].permissions.admin = False
     mock_github.return_value.get_user.return_value.get_repos.return_value = grepos
     user = User.objects.create(username='prova')

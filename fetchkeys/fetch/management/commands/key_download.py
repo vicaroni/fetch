@@ -1,7 +1,8 @@
 from github import Github
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from fetch.models import UserRepository, DeployKey
+
 
 class Command(BaseCommand):
 
@@ -14,7 +15,7 @@ class Command(BaseCommand):
         try:
             git_user = Github(options['token']).get_user()
         except:
-            return 'not_found' #User not found on Github
+            return 'not_found'  # User not found on Github
         local_user = User.objects.get(username=options['username'])
         for repo in git_user.get_repos():
             if repo.permissions.admin:
