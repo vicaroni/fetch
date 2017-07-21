@@ -19,9 +19,12 @@ def test_key_list(client):
     repo = UserRepository.objects.create(user=user, name='Repo prova')
     DeployKey.objects.create(repository=repo, title='Chiave prova', key='ssh-rsa prova')
     response = client.get(reverse('key_list', args=('',))).content
-    assert b'Token prova' in response and b'Repo prova' in response and b'Chiave prova' in response
+    assert b'Token prova' in response
+    assert b'Repo prova' in response
+    assert b'Chiave prova' in response
 
 def test_key_download_command(mocker):
+    """Tests database UserRepository and DeployKey entries after calling key_download"""
     mock_github = mocker.patch('fetch.management.commands.key_download.Github')
     grepos = [Mock() for i in range(3)]
     for grepo in grepos:
@@ -34,8 +37,14 @@ def test_key_download_command(mocker):
     token = Token.objects.create(user=user, description='Token prova', token='prova')
     result = call_command('key_download', user.username, token.token)
     assert result != 'not_found'
-    assert UserRepository.objects.get(name='Repo0').name == 'Repo0'
-    assert UserRepository.objects.get(name='Repo1').name == 'Repo1'
+    repo0 = UserRepository.objects.get(name='Repo0')
+    repo1 = UserRepository.objects.get(name='Repo1')
+    assert repo0
+    assert repo1
     assert pytest.raises(UserRepository.DoesNotExist, UserRepository.objects.get, name='Repo2')
-    assert DeployKey.objects.get(repository=UserRepository.objects.get(name='Repo0'), title='key1').title == 'key1'
-    assert DeployKey.objects.get(repository=UserRepository.objects.get(name='Repo1'), title='key1').title == 'key1'
+    assert DeployKey.objects.get(repository=repo0, title='key1')
+    assert DeployKey.objects.get(repository=repo0, title='key2')
+    assert DeployKey.objects.get(repository=repo0, title='key3')
+    assert DeployKey.objects.get(repository=repo1, title='key1')
+    assert DeployKey.objects.get(repository=repo1, title='key2')
+    assert DeployKey.objects.get(repository=repo1, title='key3')
