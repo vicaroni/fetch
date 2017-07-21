@@ -2,7 +2,7 @@ body{
     background-color: palegreen;
     margin: 20px 20px 20px 20px
 }
-a{
+a.button{
     color: white;
     background-color: green;
     border-top: 2px lightgrey solid;
@@ -12,7 +12,7 @@ a{
     font-family: sans-serif;
     padding: 1px 7px 1px 7px;
 }
-a:visited{
+a.button:visited{
     color: white;
 }
 table{

@@ -1,14 +1,14 @@
 {% extends 'fetch/base.html' %}
 {% block content %}
 <h2>Logged in as {{user.username}}</h2>
-<a href="{% url 'logout' %}">Logout</a>
-<a href="{% url 'user_form' %}">Add Personal Access Token</a>
+<a class="button" href="{% url 'logout' %}">Logout</a>
+<a class="button" href="{% url 'user_form' %}">Add Personal Access Token</a>
 <h2>Existing tokens:</h2>
 <ul>
   {% for token in user.tokens.all %}
     <li>
       {{token.description}}
-      <a href="{% url 'delete' thing='token' obj=token.description %}">Delete</a>
+      <a class="button" href="{% url 'delete' thing='token' obj=token.description %}">Delete</a>
     </li>
   {% empty %}
     No tokens added
@@ -18,16 +18,16 @@
   {% if error %}
     {{error}}
   {% endif %}
-  <a href="{% url 'key_list' response='update' %}">Update repo list</a>
+  <a class="button" href="{% url 'key_list' response='update' %}">Update repo list</a>
 {% endif %}
 {% for repo in user.repos.all %}
-  <h2>{{repo.name}}</h2>
-  <a href="{% url 'delete' thing='repo' obj=repo.name %}">Delete</a>
+  <a href="http://www.github.com/{{repo.name}}"><h2>{{repo.name}}</h2></a>
+  <a class="button" href="{% url 'delete' thing='repo' obj=repo.name %}">Delete</a>
   <ul>
     {% for key in repo.keys.all %}
       <li>
         <h3>{{key.title}}</h3>
-        <a href="{% url 'delete' thing='key' obj=key.title %}">Delete</a><br/>
+        <a class="button" href="{% url 'delete' thing='key' obj=key.title %}">Delete</a><br/>
         {{key.key}}
       </li>
     {% empty %}
