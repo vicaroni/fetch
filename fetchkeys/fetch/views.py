@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.core.management import call_command
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 from .forms import UserForm, RegisterForm
-from .models import UserRepository, DeployKey
+from .models import UserRepository, DeployKey, Token
+
 
 # Create your views here.
 @login_required
@@ -14,6 +14,7 @@ def key_list(request, response):
         if result == 'not_found':
             return render(request, 'fetch/key_list.html', {'user': request.user, 'error': 'Token not found on Github'})
     return render(request, 'fetch/key_list.html', {'user': request.user})
+
 
 @login_required
 def user_form(request):
@@ -28,12 +29,24 @@ def user_form(request):
         form = UserForm()
     return render(request, 'fetch/user_form.html', {'form': form})
 
+
 def register(request):
-    if request.method =='POST':
+    if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            form.save()
             return redirect('login')
     else:
         form = RegisterForm()
     return render(request, 'registration/register.html', {'form': form})
+
+
+@login_required
+def delete(request, thing, obj):
+    if thing == 'token':
+        Token.objects.get(description=obj).delete()
+    elif thing == 'repo':
+        UserRepository.objects.get(name=obj).delete()
+    elif thing == 'key':
+        DeployKey.objects.get(title=obj).delete()
+    return redirect('key_list', response='')
