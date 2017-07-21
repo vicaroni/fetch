@@ -19,9 +19,11 @@ def test_key_list(client):
     repo = UserRepository.objects.create(user=user, name='Repo')
     DeployKey.objects.create(repository=repo, title='Key', key='ssh-rsa')
     response = client.get(reverse('key_list', args=('',))).content
-    assert b'Token prova' in response
-    assert b'Repo prova' in response
-    assert b'Chiave prova' in response
+    assert b'Token' in response
+    assert b'token' in response
+    assert b'Repo' in response
+    assert b'Key' in response
+    assert b'ssh-rsa' in response
 
 def test_key_download_command(mocker):
     """Tests database UserRepository and DeployKey entries after calling key_download"""
